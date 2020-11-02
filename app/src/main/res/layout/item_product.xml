@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp"
+    android:foreground="?attr/selectableItemBackgroundBorderless"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="2dp"
+    android:orientation="vertical"
+    app:cardMaxElevation="2dp">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+    <ImageView
+        android:id="@+id/product_imageView"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_gravity="center_horizontal"/>
+    <TextView
+        android:id="@+id/product_titleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Title"
+        android:textColor="@color/colorBlack"/>
+    <TextView
+        android:id="@+id/product_previousPriceTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Previous price"
+        android:textSize="10sp"
+        android:textColor="@color/colorGray500"/>
+    <TextView
+        android:id="@+id/product_currentPriceTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Current price"
+        android:textSize="14sp"
+        android:textColor="@color/colorBlack"/>
+</LinearLayout>
+</androidx.cardview.widget.CardView>
