@@ -16,4 +16,5 @@
     <color name="addToCartButtonColor">#3F51B5</color>
     <color name="addToCartButtonColorPressed">#5C6BC0</color>
     <color name="colorRed">#f44336</color>
+    <color name="colorDarkBlue">#283593</color>
 </resources>
