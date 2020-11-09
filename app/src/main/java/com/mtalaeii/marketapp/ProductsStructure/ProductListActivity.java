@@ -3,32 +3,35 @@ package com.mtalaeii.marketapp.ProductsStructure;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.mtalaeii.marketapp.ApiStructure.ApiService;
+import com.mtalaeii.marketapp.ApiStructure.ApiService2;
+import com.mtalaeii.marketapp.ApiStructure.Details;
 import com.mtalaeii.marketapp.ProductsStructure.common.adapters.ProductsAdapter;
 import com.mtalaeii.marketapp.ProductsStructure.common.model.Product;
 import com.mtalaeii.marketapp.R;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class ProductListActivity extends AppCompatActivity implements ProductsAdapter.ProductsViewHolder.OnProductItemClick, Response.Listener<List<Product>>,Response.ErrorListener {
+import retrofit2.Call;
+import retrofit2.Callback;
+
+public class ProductListActivity extends AppCompatActivity implements ProductsAdapter.ProductsViewHolder.OnProductItemClick {
     private RecyclerView recyclerView;
     private ProgressBar progressBar;
+    private List<Product> productList;
+    private ProductsAdapter productsAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_list);
         setupViews();
-        ApiService apiService = new ApiService<>(this);
-        apiService.getProduct(ProductListActivity.this,ProductListActivity.this );
+        getProductData();
     }
 
     private void setupViews() {
@@ -43,7 +46,7 @@ public class ProductListActivity extends AppCompatActivity implements ProductsAd
         });
         recyclerView= findViewById(R.id.product_listRV);
         recyclerView.setLayoutManager(new GridLayoutManager(this,2,RecyclerView.VERTICAL,false));
-
+        productList = new ArrayList<>();
     }
 
     @Override
@@ -51,15 +54,27 @@ public class ProductListActivity extends AppCompatActivity implements ProductsAd
         ProductActivity.start(this,product);
     }
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        Toast.makeText(ProductListActivity.this,"Error !!!",Toast.LENGTH_LONG).show();
-    }
+    public void getProductData(){
+        try {
+            ApiService2.getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
+                @Override
+                public void onResponse(Call<List<Product>> call, retrofit2.Response<List<Product>> response) {
+                    Details.L(response.body().size()+" Size ");
+                    productList.clear();
+                    productList.addAll(response.body());
+                    productsAdapter = new ProductsAdapter(productList,ProductListActivity.this);
+                    recyclerView.setAdapter(productsAdapter);
+                    progressBar.setVisibility(View.GONE);
+                }
 
-    @Override
-    public void onResponse(List<Product> products) {
-        ProductsAdapter productsAdapter = new ProductsAdapter(products, ProductListActivity.this);
-        recyclerView.setAdapter(productsAdapter);
-        progressBar.setVisibility(View.GONE);
+                @Override
+                public void onFailure(Call<List<Product>> call, Throwable t) {
+                    Details.T(t.toString(), ProductListActivity.this);
+                }
+            });
+        }catch (Exception e){
+            Details.T(e.toString(), ProductListActivity.this);
+        }
+
     }
 }

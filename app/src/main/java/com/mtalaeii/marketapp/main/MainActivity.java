@@ -3,14 +3,15 @@ package com.mtalaeii.marketapp.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.mtalaeii.marketapp.ApiStructure.ApiService;
+import com.mtalaeii.marketapp.ApiStructure.ApiService2;
+import com.mtalaeii.marketapp.ApiStructure.Details;
 import com.mtalaeii.marketapp.ProductsStructure.ProductActivity;
 import com.mtalaeii.marketapp.ProductsStructure.common.adapters.ProductsAdapter;
 import com.mtalaeii.marketapp.ProductsStructure.common.model.Product;
@@ -18,8 +19,13 @@ import com.mtalaeii.marketapp.ProductsStructure.ProductListActivity;
 import com.mtalaeii.marketapp.ProductsStructure.View.ProductListRow;
 import com.mtalaeii.marketapp.R;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PropertyResourceBundle;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 import ss.com.bannerslider.banners.Banner;
 import ss.com.bannerslider.banners.RemoteBanner;
 import ss.com.bannerslider.views.BannerSlider;
@@ -32,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageView shoes;
     private ImageView watch;
     private ImageView glass;
+    private TextView cardItemCounterTextView;
+    private List<Product> popularProductList;
+    private List<Product> newestProductList;
     private ProductsAdapter.ProductsViewHolder.OnProductItemClick onProductItemClick =new ProductsAdapter.ProductsViewHolder.OnProductItemClick() {
         @Override
         public void onProductClick(Product product) {
@@ -43,29 +52,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupViews();
-        ApiService apiService = new ApiService(this);
-        apiService.getProduct(new Response.Listener<List<Product>>() {
-            @Override
-            public void onResponse(List<Product> response) {
-                latestProductListRow.attachProducts(response,onProductItemClick);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
+        getPopularProductData();
+        getNewestProductList();
+    }
 
-            }
-        },Product.LATEST_PRODUCTS);
-        apiService.getProduct(new Response.Listener<List<Product>>() {
-            @Override
-            public void onResponse(List<Product> response) {
-                popularProductListRow.attachProducts(response,onProductItemClick);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                
-            }
-        },Product.POPULAR_PRODUCTS);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cardItemCounterTextView.setText(String.valueOf(ProductActivity.addCounter));
     }
 
     private void setupViews() {
@@ -78,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         bannerList.add(banner2);
         bannerList.add(banner3);
         bannerSlider.setBanners(bannerList);
+        popularProductList = new ArrayList<>();
+        newestProductList = new ArrayList<>();
+        cardItemCounterTextView = findViewById(R.id.main_cartItemCounterTV);
         latestProductListRow = findViewById(R.id.productListRow_main_latestProducts);
         latestProductListRow.setTextTitle("Newest Products");
         latestProductListRow.setOnShowAllButtonClickListener(new View.OnClickListener() {
@@ -113,5 +110,47 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this,"No category found !!!",Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    public void getPopularProductData(){
+        try {
+            ApiService2.getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
+                @Override
+                public void onResponse(Call<List<Product>> call, retrofit2.Response<List<Product>> response) {
+                    Details.L(response.body().size()+" Size ");
+                    popularProductList.clear();
+                    popularProductList.addAll(response.body());
+                    popularProductListRow.attachProducts(popularProductList,onProductItemClick);
+                }
+
+                @Override
+                public void onFailure(Call<List<Product>> call, Throwable t) {
+                    Details.T(t.toString(),MainActivity.this);
+                }
+            });
+        }catch (Exception e){
+            Details.T(e.toString(), MainActivity.this);
+        }
+
+    }
+    public void getNewestProductList(){
+        try {
+            ApiService2.getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
+                @Override
+                public void onResponse(Call<List<Product>> call, retrofit2.Response<List<Product>> response) {
+                    Details.L(response.body().size()+" Size ");
+                    newestProductList.clear();
+                    newestProductList.addAll(response.body());
+                    latestProductListRow.attachProducts(newestProductList,onProductItemClick);
+                }
+
+                @Override
+                public void onFailure(Call<List<Product>> call, Throwable t) {
+                    Details.T(t.toString(),MainActivity.this);
+                }
+            });
+        }catch (Exception e){
+            Details.T(e.toString(), MainActivity.this);
+        }
+
     }
 }

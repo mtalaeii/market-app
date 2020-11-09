@@ -38,6 +38,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="8dp"/>
                 <TextView
+                    android:id="@+id/main_cartItemCounterTV"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:background="@drawable/cart_items_counter_background"

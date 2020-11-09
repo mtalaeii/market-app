@@ -6,22 +6,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
-import com.mtalaeii.marketapp.ApiStructure.ApiService;
+import com.mtalaeii.marketapp.ApiStructure.ApiService2;
+import com.mtalaeii.marketapp.ApiStructure.Details;
 import com.mtalaeii.marketapp.ProductsStructure.common.adapters.CommentAdapter;
 import com.mtalaeii.marketapp.ProductsStructure.common.model.Comment;
 import com.mtalaeii.marketapp.ProductsStructure.common.model.Product;
@@ -30,9 +23,12 @@ import com.mtalaeii.marketapp.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductActivity extends AppCompatActivity implements Response.Listener<List<Comment>>,Response.ErrorListener {
+import retrofit2.Call;
+import retrofit2.Callback;
 
-    private static String EXTRA_KEY_PRODUCT = "product";
+public class ProductActivity extends AppCompatActivity {
+
+    public static String EXTRA_KEY_PRODUCT = "product";
     private TextView productTitleTextView;
     private TextView productAddToCartTextView;
     private TextView productCurrentPriceTV;
@@ -43,6 +39,9 @@ public class ProductActivity extends AppCompatActivity implements Response.Liste
     private RecyclerView commentsRecyclerView;
     private ProgressBar commentsProgressBar;
     private ImageView back;
+    private List<Comment> commentList;
+    private CommentAdapter commentAdapter;
+    public static int addCounter = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,15 +53,20 @@ public class ProductActivity extends AppCompatActivity implements Response.Liste
         }
         setupViews();
         bindProducts();
-        ApiService apiService = new ApiService<>(this);
-        apiService.getComment("1",this,this);
+        getCommentsData();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ProductActivity.this.finish();
             }
         });
+        addToCartButton.setOnClickListener(v -> {
+            if(addCounter >= 0){
+                addCounter++;
+            }
+        });
     }
+
     private void setupViews() {
         productImageView=findViewById(R.id.product_detailImageIV);
         productTitleTextView = findViewById(R.id.product_detailTitleTV);
@@ -74,7 +78,7 @@ public class ProductActivity extends AppCompatActivity implements Response.Liste
         commentsProgressBar=findViewById(R.id.product_detail_commentsProgressBar);
         back = findViewById(R.id.product_detail_backArrowButton);
         commentsRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-
+        commentList = new ArrayList<>();
     }
     private void bindProducts(){
         productTitleTextView.setText(product.getTitle());
@@ -95,16 +99,27 @@ public class ProductActivity extends AppCompatActivity implements Response.Liste
         context.startActivity(intent);
     }
 
-    @Override
-    public void onErrorResponse(VolleyError error) {
+    public void getCommentsData(){
+        try {
+            ApiService2.getCommentApi().getComment().enqueue(new Callback<List<Comment>>() {
+                @Override
+                public void onResponse(Call<List<Comment>> call, retrofit2.Response<List<Comment>> response) {
+                    Details.L(response.body().size()+" Size ");
+                    commentList.clear();
+                    commentList.addAll(response.body());
+                    commentAdapter = new CommentAdapter(commentList);
+                    commentsRecyclerView.setAdapter(commentAdapter);
+                    commentsProgressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onFailure(Call<List<Comment>> call, Throwable t) {
+                    Details.T(t.toString(),ProductActivity.this);
+                }
+            });
+        }catch (Exception e){
+                    Details.T(e.toString(),ProductActivity.this);
+        }
 
     }
-
-    @Override
-    public void onResponse(List<Comment> comments) {
-        CommentAdapter commentAdapter = new CommentAdapter(comments);
-        commentsRecyclerView.setAdapter(commentAdapter);
-        commentsProgressBar.setVisibility(View.GONE);
-    }
-
 }

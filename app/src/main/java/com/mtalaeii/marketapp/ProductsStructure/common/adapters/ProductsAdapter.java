@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.mtalaeii.marketapp.ProductsStructure.ProductActivity;
 import com.mtalaeii.marketapp.ProductsStructure.common.model.Product;
 import com.mtalaeii.marketapp.R;
 
@@ -20,6 +21,9 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     private List<Product> products;
     private ProductsViewHolder.OnProductItemClick onProductItemClick;
     private int resourceId = -1;
+    public ProductsAdapter(List<Product> products){
+        this.products = products;
+    }
     public ProductsAdapter(List<Product> products, ProductsViewHolder.OnProductItemClick onProductItemClick){
         this.products = products;
         this.onProductItemClick = onProductItemClick;
