@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".ApiStructure.ApiService2"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,7 +21,7 @@
         </activity>
         <activity android:name=".ProductsStructure.ProductActivity" />
         <activity android:name=".ProductsStructure.ProductListActivity" />
-        <activity android:name=".main.MainActivity"></activity>
+        <activity android:name=".main.MainActivity"/>
     </application>
 
 </manifest>
