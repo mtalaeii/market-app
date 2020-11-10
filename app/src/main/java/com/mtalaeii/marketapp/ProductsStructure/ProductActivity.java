@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.mtalaeii.marketapp.ApiStructure.ApiService2;
 import com.mtalaeii.marketapp.ApiStructure.Details;
@@ -64,6 +66,10 @@ public class ProductActivity extends AppCompatActivity {
             if(addCounter >= 0){
                 addCounter++;
             }
+            addToCartButton.setVisibility(View.GONE);
+            productAddToCartTextView.setText("Added to basket !");
+            Toast.makeText(ProductActivity.this,"Added to basket",Toast.LENGTH_LONG).show();
+            productAddToCartTextView.setVisibility(View.VISIBLE);
         });
     }
 
