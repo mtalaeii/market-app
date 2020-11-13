@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.mtalaeii.marketapp.ApiStructure.ApiService2;
+import com.mtalaeii.marketapp.ApiStructure.ApiService;
 import com.mtalaeii.marketapp.ApiStructure.Details;
 import com.mtalaeii.marketapp.ProductsStructure.common.adapters.CommentAdapter;
 import com.mtalaeii.marketapp.ProductsStructure.common.model.Comment;
@@ -107,7 +107,7 @@ public class ProductActivity extends AppCompatActivity {
 
     public void getCommentsData(){
         try {
-            ApiService2.getCommentApi().getComment().enqueue(new Callback<List<Comment>>() {
+            ApiService.getCommentApi().getComment().enqueue(new Callback<List<Comment>>() {
                 @Override
                 public void onResponse(Call<List<Comment>> call, retrofit2.Response<List<Comment>> response) {
                     Details.L(response.body().size()+" Size ");

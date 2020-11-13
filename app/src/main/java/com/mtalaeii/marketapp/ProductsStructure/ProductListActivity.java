@@ -8,7 +8,7 @@ import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.mtalaeii.marketapp.ApiStructure.ApiService2;
+import com.mtalaeii.marketapp.ApiStructure.ApiService;
 import com.mtalaeii.marketapp.ApiStructure.Details;
 import com.mtalaeii.marketapp.ProductsStructure.common.adapters.ProductsAdapter;
 import com.mtalaeii.marketapp.ProductsStructure.common.model.Product;
@@ -16,7 +16,6 @@ import com.mtalaeii.marketapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,7 +55,7 @@ public class ProductListActivity extends AppCompatActivity implements ProductsAd
 
     public void getProductData(){
         try {
-            ApiService2.getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
+            ApiService.getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
                 @Override
                 public void onResponse(Call<List<Product>> call, retrofit2.Response<List<Product>> response) {
                     Details.L(response.body().size()+" Size ");

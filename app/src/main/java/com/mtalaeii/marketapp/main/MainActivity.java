@@ -3,14 +3,13 @@ package com.mtalaeii.marketapp.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.mtalaeii.marketapp.ApiStructure.ApiService2;
+import com.mtalaeii.marketapp.ApiStructure.ApiService;
 import com.mtalaeii.marketapp.ApiStructure.Details;
 import com.mtalaeii.marketapp.ProductsStructure.ProductActivity;
 import com.mtalaeii.marketapp.ProductsStructure.common.adapters.ProductsAdapter;
@@ -19,10 +18,8 @@ import com.mtalaeii.marketapp.ProductsStructure.ProductListActivity;
 import com.mtalaeii.marketapp.ProductsStructure.View.ProductListRow;
 import com.mtalaeii.marketapp.R;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PropertyResourceBundle;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -113,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void getPopularProductData(){
         try {
-            ApiService2.getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
+            ApiService.getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
                 @Override
                 public void onResponse(Call<List<Product>> call, retrofit2.Response<List<Product>> response) {
                     Details.L(response.body().size()+" Size ");
@@ -134,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void getNewestProductList(){
         try {
-            ApiService2.getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
+            ApiService.getProductApi().getProducts().enqueue(new Callback<List<Product>>() {
                 @Override
                 public void onResponse(Call<List<Product>> call, retrofit2.Response<List<Product>> response) {
                     Details.L(response.body().size()+" Size ");

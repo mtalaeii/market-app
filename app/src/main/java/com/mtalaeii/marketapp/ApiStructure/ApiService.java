@@ -5,7 +5,7 @@ import android.app.Application;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ApiService2 extends Application {
+public class ApiService extends Application {
     private Retrofit productRequest;
     private Retrofit commentRequest;
     private static Api productApi;
